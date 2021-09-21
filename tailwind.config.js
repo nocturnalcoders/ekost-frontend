@@ -7,7 +7,7 @@ module.exports = {
         colors: {
           'orange-button': '#FF872E',
           'green-button': '#1ABC9C',
-          'purple-hover': '#66a5ad',
+          'purple-hover': '#00BEF8',
           'purple-hover-stroke': '#8286FF',
           'purple-progress': '#66a5ad',
         },

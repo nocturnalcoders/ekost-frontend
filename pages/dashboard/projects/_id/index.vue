@@ -17,7 +17,10 @@
         </div>
         <div class="w-1/4 text-right">
           <nuxt-link
-            to="/dashboard/projects/create"
+            :to="{
+              name: 'dashboard-projects-id-edit',
+              params: { id: kost.data.id },
+            }"
             class="
               bg-green-button
               hover:bg-green-button
@@ -38,6 +41,7 @@
         <div class="w-full lg:max-w-full lg:flex mb-4">
           <div
             class="
+              w-full
               border border-gray-400
               bg-white
               rounded
@@ -49,90 +53,91 @@
           >
             <div>
               <div class="text-gray-900 font-bold text-xl mb-2">
-                Cari Uang Buat Gunpla
+                {{ kost.data.name }}
               </div>
-              <p class="text-sm font-bold flex items-center mb-1">
+              <p class="text-sm font-bold flex items-center mb-1 mt-4">
+                Short Description
+              </p>
+              <p class="text-gray-700 text-base">
+                {{ kost.data.short_description }}
+              </p>
+              <p class="text-sm font-bold flex items-center mb-1 mt-4">
+                Rooms Available
+              </p>
+              <p class="text-gray-700 text-base">
+                {{ kost.data.current_space_count }}
+              </p>
+              <p class="text-sm font-bold flex items-center mb-1 mt-4">
                 Description
               </p>
               <p class="text-gray-700 text-base">
-                Designed to fit your dedicated typing experience. No matter what
-                you like, linear, clicky or a little in between, we’ve got you
-                covered with three Gateron switches options (Blue, Brown, Red).
-                With a lifespan of 50 million keystroke lifespan we want to make
-                sure that you experience same feedback for every keystroke.
-              </p>
-              <p class="text-gray-700 text-base">
-                With N-key rollover (NKRO on wired mode only) you can register
-                as many keys as you can press at once without missing out
-                characters. It allows to use all the same media keys as
-                conventional macOS.
+                {{ kost.data.description }}
               </p>
               <p class="text-sm font-bold flex items-center mb-1 mt-4">
                 What Will Funders Get
               </p>
               <ul class="list-disc ml-5">
-                <li>Equity of the startup directly from the founder</li>
-                <li>Special service or product that startup has</li>
-                <li>
-                  You can also sell your equity once the startup going IPO
+                <li v-for="perk in kost.data.perks" :key="perk">
+                  {{ perk }}
                 </li>
               </ul>
               <p class="text-sm font-bold flex items-center mb-1 mt-4">Price</p>
-              <p class="text-4xl text-gray-700 text-base">200.000</p>
+              <p class="text-4xl text-gray-700 text-base">
+                {{ new Intl.NumberFormat().format(kost.data.price) }}
+              </p>
             </div>
           </div>
         </div>
       </div>
       <div class="flex justify-between items-center">
-        <div class="w-3/4 mr-6">
+        <div class="w-2/4 mr-6">
           <h3 class="text-2xl text-gray-900 mb-4 mt-5">Gallery</h3>
         </div>
-        <div class="w-1/4 text-right">
-          <nuxt-link
-            to="#"
+        <div class="w-2/4 text-right">
+          <input
+            type="file"
+            ref="file"
+            @change="selectFile"
+            class="border p-1 rounded overflow-hidden"
+          />
+          <button
+            @click="upload"
             class="
               bg-green-button
               hover:bg-green-button
               text-white
               font-bold
               px-4
-              py-1
+              py-2
               rounded
               inline-flex
               items-center
             "
           >
             Upload
-          </nuxt-link>
+          </button>
         </div>
       </div>
-      <div class="flex -mx-2">
+      <div class="grid grid-cols-4 gap-4 -mx-2">
         <div
-          class="relative w-1/4 bg-white m-2 p-2 border border-gray-400 rounded"
+          class="
+            relative
+            w-full
+            bg-white
+            m-2
+            p-2
+            border border-gray-400
+            rounded
+          "
+          v-for="image in kost.data.images"
+          :key="image.images_url"
         >
           <figure class="item-thumbnail">
-            <img src="/project-slider-1.jpg" alt="" class="rounded w-full" />
-          </figure>
-        </div>
-        <div
-          class="relative w-1/4 bg-white m-2 p-2 border border-gray-400 rounded"
-        >
-          <figure class="item-thumbnail">
-            <img src="/project-slider-2.jpg" alt="" class="rounded w-full" />
-          </figure>
-        </div>
-        <div
-          class="relative w-1/4 bg-white m-2 p-2 border border-gray-400 rounded"
-        >
-          <figure class="item-thumbnail">
-            <img src="/project-slider-3.jpg" alt="" class="rounded w-full" />
-          </figure>
-        </div>
-        <div
-          class="relative w-1/4 bg-white m-2 p-2 border border-gray-400 rounded"
-        >
-          <figure class="item-thumbnail">
-            <img src="/project-slider-4.jpg" alt="" class="rounded w-full" />
+            <img
+              :src="$axios.defaults.baseURL  + image.images_url"
+              alt=""
+              class="rounded w-full"
+            />
           </figure>
         </div>
       </div>
@@ -142,7 +147,11 @@
         </div>
       </div>
       <div class="block mb-2">
-        <div class="w-full lg:max-w-full lg:flex mb-4">
+        <div
+          class="w-full lg:max-w-full lg:flex mb-4"
+          v-for="transaction in transactions.data"
+          :key="transaction.id"
+        >
           <div
             class="
               w-full
@@ -158,10 +167,12 @@
           >
             <div>
               <div class="text-gray-900 font-bold text-xl mb-1">
-                Galih Pratama
+                {{ transaction.name }}
               </div>
               <p class="text-sm text-gray-600 flex items-center mb-2">
-                Rp. 200.000 &middot; 12 September 2020
+                Rp.
+                {{ new Intl.NumberFormat().format(transaction.amount) }}
+                &middot; {{ transaction.created_at }}
               </p>
             </div>
           </div>
@@ -169,6 +180,54 @@
       </div>
     </section>
     <div class="cta-clip -mt-20"></div>
+    <section class="call-to-action bg-purple-progress pt-64 pb-10"></section>
     <Footer />
   </div>
 </template>
+
+<script>
+export default {
+  middleware: 'auth',
+  async asyncData({ $axios, params }) {
+    const kost = await $axios.$get('api/v1/kosts/' + params.id)
+    const transactions = await $axios.$get(
+      'api/v1/kosts/' + params.id + '/transactions'
+    )
+    return { kost, transactions }
+  },
+  data() {
+    return {
+      selectedFiles: undefined,
+    }
+  },
+  methods: {
+    selectFile() {
+      this.selectedFiles = this.$refs.file.files
+    },
+    async load() {
+      const kost = await this.$axios.$get(
+        'api/v1/kosts/' + this.$route.params.id
+      )
+      this.kost = kost
+    },
+    async upload(file) {
+      let formData = new FormData()
+      formData.append('kost_id', this.$route.params.id)
+      formData.append('file', this.selectedFiles.item(0))
+      formData.append('is_primary', true)
+      try {
+        let response = await this.$axios.post('api/v1/kost-images', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        console.log(response)
+        this.load()
+        this.selectedFiles = undefined
+      } catch (err) {
+        console.log(err)
+      }
+    },
+  },
+}
+</script>

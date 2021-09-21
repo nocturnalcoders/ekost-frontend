@@ -85,7 +85,6 @@
         </div>
       </div>
     </section>
-    <div class="cta-clip -mt-20"></div>
     <Footer />
   </div>
 </template>
@@ -94,8 +93,8 @@
 export default {
   middleware: 'auth',
   async asyncData({ $axios, app }) {
-    const kosts = await $axios.$get('/api/v1/transactions')
-    return { kosts }
+    const transactions = await $axios.$get('api/v1/transactions')
+    return { transactions }
   },
 }
 </script>

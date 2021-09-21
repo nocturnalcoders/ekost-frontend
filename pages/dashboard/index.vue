@@ -27,7 +27,7 @@
         </div>
         <div class="w-1/4 text-right">
           <nuxt-link
-            to="/dashboard/create.html"
+            to="/dashboard/projects/create"
             class="
               bg-orange-button
               hover:bg-green-button
@@ -40,7 +40,7 @@
               items-center
             "
           >
-            + Create Campaign
+            + Create Kost
           </nuxt-link>
         </div>
       </div>
@@ -78,7 +78,7 @@
             />
           </div>
           <nuxt-link
-            :to="'dashboard/projects/' + kost.id"
+            :to="'/dashboard/projects/' + kost.id"
             class="
               w-full
               border-r border-b border-l border-gray-400
@@ -124,7 +124,7 @@ export default {
   middleware: 'auth',
   async asyncData({ $axios, app }) {
     const kosts = await $axios.$get(
-      '/api/v1/kosts?user_id=' + app.$auth.user.id
+      'api/v1/kosts?user_id=' + app.$auth.user.id
     )
     return { kosts }
   },

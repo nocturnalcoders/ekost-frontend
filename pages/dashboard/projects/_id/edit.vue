@@ -13,7 +13,7 @@
       </div>
       <div class="flex justify-between items-center">
         <div class="w-3/4 mr-6">
-          <h3 class="text-2xl text-gray-900 mb-4">Create New Rooms</h3>
+          <h3 class="text-2xl text-gray-900 mb-4">Edit Room "{{kost.data.name}}"</h3>
         </div>
         <div class="w-1/4 text-right">
           <button
@@ -79,7 +79,7 @@
                     "
                     type="text"
                     placeholder="Contoh: Demi Gunpla Demi Istri"
-                    v-model="kost.name"
+                    v-model="kost.data.name"
                   />
                 </div>
                 <div class="w-full md:w-1/2 px-3">
@@ -111,7 +111,7 @@
                     "
                     type="number"
                     placeholder="Contoh: 200000"
-                    v-model.number="kost.price"
+                    v-model="kost.data.price"
                   />
                 </div>
                 <div class="w-full px-3">
@@ -145,8 +145,46 @@
                     "
                     type="text"
                     placeholder="Deskripsi singkat mengenai Room Kamu"
-                    v-model="kost.short_description"
+                    v-model="kost.data.short_description"
                   />
+
+                  
+                </div>
+                <div class="w-full px-3">
+                  <label
+                    class="
+                      block
+                      uppercase
+                      tracking-wide
+                      text-gray-700 text-xs
+                      font-bold
+                      mb-2
+                      mt-3
+                    "
+                  >
+                    Room Available 
+                  </label>
+                  <input
+                    class="
+                      appearance-none
+                      block
+                      w-full
+                      bg-gray-200
+                      text-gray-700
+                      border border-gray-200
+                      rounded
+                      py-3
+                      px-4
+                      mb-3
+                      leading-tight
+                      focus:outline-none focus:bg-white focus:border-gray-500
+                    "
+                    type="text"
+                    placeholder="Deskripsi singkat mengenai Room Kamu"
+                    v-model="kost.data.current_space_count"
+                  />
+
+                  
                 </div>
                 <div class="w-full px-3">
                   <label
@@ -178,7 +216,7 @@
                     "
                     type="text"
                     placeholder="Contoh: Ayam, Nasi Goreng, Piring"
-                    v-model="kost.perks"
+                    v-model="kost.data.perks"
                   />
                 </div>
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -210,7 +248,7 @@
                     "
                     type="text"
                     placeholder="Contoh: Demi Gunpla Demi Istri"
-                    v-model="kost.longitude"
+                    v-model="kost.data.longitude"
                   />
                 </div>
 
@@ -243,7 +281,7 @@
                     "
                     type="text"
                     placeholder="Contoh: Demi Gunpla Demi Istri"
-                    v-model="kost.latitude"
+                    v-model="kost.data.latitude"
                   />
                 </div>
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -255,6 +293,7 @@
                       text-gray-700 text-xs
                       font-bold
                       mb-2
+                      mt-5
                     "
                   >
                     Panjang
@@ -275,9 +314,10 @@
                     "
                     type="text"
                     placeholder="Contoh: Demi Gunpla Demi Istri"
-                    v-model="kost.panjang"
+                    v-model="kost.data.panjang"
                   />
                 </div>
+                
                 <div class="w-full md:w-1/2 px-3 mb-10 md:mb-0">
                   <label
                     class="
@@ -287,6 +327,7 @@
                       text-gray-700 text-xs
                       font-bold
                       mb-2
+                      mt-5
                     "
                   >
                     Lebar
@@ -307,7 +348,7 @@
                     "
                     type="text"
                     placeholder="Contoh: Demi Gunpla Demi Istri"
-                    v-model="kost.lebar"
+                    v-model="kost.data.lebar"
                   />
                 </div>
                 <div class="w-full md:w-1/2 px-3 mb-10 md:mb-0">
@@ -328,7 +369,7 @@
                     type="radio"
                     id="Perempuan"
                     value="Perempuan"
-                    v-model="kost.gender"
+                    v-model="kost.data.gender"
                   />
                   <label for="one">Perempuan</label>
                   <br />
@@ -336,7 +377,7 @@
                     type="radio"
                     id="Laki-Laki"
                     value="Laki-Laki"
-                    v-model="kost.gender"
+                    v-model="kost.data.gender"
                   />
                   <label for="two">Laki-Laki</label>
                   <br />
@@ -379,7 +420,7 @@
                     "
                     type="text"
                     placeholder="Isi deskripsi panjang untuk Room Kamu"
-                    v-model="kost.description"
+                    v-model="kost.data.description"
                   ></textarea>
                 </div>
               </div>
@@ -395,36 +436,35 @@
 <script>
 export default {
   middleware: 'auth',
-
-  data() {
-    return {
-      kost: {
-        name: '',
-        short_description: '',
-        description: '',
-        latitude: '',
-        longitude: '',
-        price: 0,
-        type: 'newroom',
-        panjang: '',
-        lebar: '',
-        gender: '',
-        perks: '',
-      },
-    }
+  
+  async asyncData({ $axios,params}) {
+    const kost = await $axios.$get('api/v1/kosts/' + params.id)
+    return {kost}
   },
+
   methods: {
     async save() {
       try {
-        let response = await this.$axios.$post('api/v1/kosts', this.kost)
-        this.$router.push({
-          name: 'dashboard-projects-id',
-          params: { id: response.data.id },
+        let response = await this.$axios.$put('api/v1/kosts' + this.$route.params.id, {
+          name: this.kost.data.name,
+          price: this.kost.data.price,
+          short_description: this.kost.data.short_description,
+          perks: this.kost.data.perks,
+          longitude: this.kost.data.longitude,
+          latitude: this.kost.data.latitude,
+          panjang: this.kost.data.panjang,
+          lebar: this.kost.data.lebar,
+          gender: this.kost.data.gender,
+          description: this.kost.data.description,
         })
+        
         console.log('ini response create kost', response)
       } catch (error) {
         console.log('ini error response create kost', error)
       }
+    },
+     changeImage(url) {
+      this.default_image = url
     },
   },
 }

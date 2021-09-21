@@ -3,9 +3,9 @@
     <div class="container mx-auto">
       <div class="w-full text-center">
         <h1 class="text-5xl text-white font-semibold">
-          Easy way to funding
+          Easy way to Stay and Live
           <br />
-          best idea and innovation
+          Best Place to Stay and Live
         </h1>
         <button
           @click="$router.push({ path: '/register' })"

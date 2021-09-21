@@ -14,8 +14,8 @@
       <li>
         <nuxt-link
           class="text-white hover:text-teal-500 text-lg px-4 py-3"
-          to="#"
-          >Project</nuxt-link
+          to="/articles"
+          >Article</nuxt-link
         >
       </li>
       <li>
@@ -152,7 +152,7 @@
                 block
                 whitespace-no-wrap
               "
-              to="/dashboard"
+              to="/profile"
               >Account Settings</nuxt-link
             >
           </li>

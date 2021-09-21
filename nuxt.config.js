@@ -46,6 +46,15 @@ export default {
     '@nuxtjs/pwa',
     // https://auth.nuxtjs.org/
     '@nuxtjs/auth-next',
+    // https://www.npmjs.com/package/nuxt-bootstrap-slider
+    'nuxt-bootstrap-slider',
+    [
+      'nuxt-gmaps',
+      {
+        key: 'AIzaSyA2VmfDmYCD9nRop31UHmd7LY3nN6d2Ytw',
+        //you can use libraries: ['places']
+      },
+    ],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -54,26 +63,26 @@ export default {
   },
 
   auth: {
-  strategies: {
-    local: {
-      token: {
-        property: 'data.token',
-        global: true,
-        // required: true,
-        // type: 'Bearer'
+    strategies: {
+      local: {
+        token: {
+          property: 'data.token',
+          global: true,
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: 'data',
+          // autoFetch: true
+        },
+        endpoints: {
+          login: { url: 'api/v1/sessions', method: 'post' },
+          logout: false,
+          user: { url: 'api/v1/users/fetch', method: 'get' },
+        },
       },
-      user: {
-        property: 'data',
-        // autoFetch: true
-      },
-      endpoints: {
-        login: { url: '/api/v1/sessions', method: 'post' },
-        logout: false,
-        user: { url: '/api/v1/users/fetch', method: 'get' }
-      }
-    }
-  }
-},
+    },
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
@@ -83,5 +92,8 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    vendor: ['vue2-google-maps'],
+  },
+  plugins: [{ src: '~/plugins/vue2-google-maps.js' }],
 }

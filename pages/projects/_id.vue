@@ -89,7 +89,7 @@
                   ease-in-out
                   focus:outline-none focus:shadow-outline
                 "
-                placeholder="Amount in Rp"
+                placeholder="ketikan sebanyak harga yang tertera"
                 value=""
                 v-model.number="transactions.amount"
                 @keyup.enter="fund"
@@ -116,8 +116,8 @@
               </button>
             </template>
             <template v-else>
-                  <button
-                @click="$router.push({path : '/login'})"
+              <button
+                @click="$router.push({ path: '/login' })"
                 class="
                   text-center
                   mt-3
@@ -172,6 +172,19 @@
             Available :
             {{ kost.data.current_space_count }}
           </div>
+
+          <GmapMap
+            v-bind:center="center"
+            v-bind:zoom="7"
+            style="width: 500px; height: 300px"
+          >
+            <GmapMarker
+              v-bind:key="index"
+              v-for="(m, index) in markers"
+              v-bind:position="m.position"
+              v-bind:clickable="true"
+            />
+          </GmapMap>
         </div>
         <div class="w-1/4 hidden md:block"></div>
       </div>
@@ -185,19 +198,28 @@
 <script>
 export default {
   async asyncData({ $axios, params }) {
-    const kost = await $axios.$get('/api/v1/kosts/' + params.id)
+    const kost = await $axios.$get('api/v1/kosts/' + params.id)
     return { kost }
   },
   data() {
     return {
       default_image: '',
       transactions: {
-        amount: 0,
+        amount: '',
         campaign_id: Number.parseInt(this.$route.params.id),
       },
     }
   },
   methods: {
+    center: { lat: 10.0, lng: 10.0 },
+    markers: [
+      {
+        position: { lat: 10.0, lng: 10.0 },
+      },
+      {
+        position: { lat: 10.0, lng: 10.0 },
+      },
+    ],
     changeImage(url) {
       this.default_image = url
     },
